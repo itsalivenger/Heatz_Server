@@ -7,7 +7,9 @@ const { connectToDb } = require('./modules/connection');  // Import the DB conne
 
 // Middleware setup
 app.use(cors());
-app.use(express.json());
+app.use(express.urlencoded({ limit: '50mb', extended: true }));
+app.use(express.json({ limit: '50mb' }));
+app.use(express.static('products'));
 
 // Import routes
 const signupRoute = require('./Routes/signupRoute');  
@@ -21,6 +23,7 @@ const cartRoute = require('./Routes/cartRoute');
 const shopRoute = require('./Routes/shopRoute');
 const favoriteRoute = require('./Routes/favoriteRoute');
 const ordersRoute = require('./Routes/ordersRoute');
+const testRoute = require('./Routes/testRoute');
 
 
 // Connect to the database and start the server
@@ -41,6 +44,7 @@ const ordersRoute = require('./Routes/ordersRoute');
     app.use('/shop', shopRoute);
     app.use('/favorite', favoriteRoute);
     app.use('/orders', ordersRoute);
+    app.use('/test', testRoute);
 
 
     // Start the server

@@ -9,10 +9,11 @@ router.get('/', async (req, res) => {
 
     // Extract the 'n' parameter from the query string and convert it to an integer
     const startIndex = parseInt(req.query.n) || 0;
+    const category = req.query.category || 'earphones';
 
     try {
         // Fetch products starting from 'startIndex' with a limit
-        const products = await productsCollection.find()
+        const products = await productsCollection.find( { category: category } )
             .skip(startIndex)     // Skip to the specified index
             .limit(loadLimit)      // Fetch only 'loadLimit' number of products
             .toArray();

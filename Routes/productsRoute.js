@@ -1,12 +1,15 @@
 const express = require('express');
 const router = express.Router();
+const upload = require('../modules/multerConfig');
 const { ObjectId } = require('mongodb');
 
-router.post('/addProduct', async (req, res) => {
-    const { productName, price, category, description, imageUrl, stock } = req.body;
+router.post('/addProduct', upload.single('productImage'), async (req, res) => {
+    const { productName, price, category, description } = req.body;
+    const imageUrl = req.file ? `${req.protocol}://${req.get('host')}/${req.file.filename}` : null;
 
+    
     try {
-        const db = req.app.locals.db; // Access the database from app.locals
+        const db = req.app.locals.db;
         const productsCollection = db.collection('Products');
 
         // Optional: Check if a product with the same productName already exists
@@ -22,20 +25,16 @@ router.post('/addProduct', async (req, res) => {
             category,
             description,
             imageUrl,
-            stock: stock ? parseInt(stock) : 0, // default stock to 0 if not provided
             createdAt: new Date(),
         };
 
-        // Insert the new product into the database
         const result = await productsCollection.insertOne(newProduct);
-
         return res.status(200).json({ message: 'Product added successfully!', productId: result.insertedId });
     } catch (error) {
         console.error('Error adding product:', error);
         return res.status(500).json({ error: 'Internal server error.' });
     }
 });
-
 
 
 router.get('/getProducts/:name', async (req, res) => {
@@ -50,6 +49,25 @@ router.get('/getProducts/:name', async (req, res) => {
         const products = await productsCollection.find({
             productName: { $regex: new RegExp(productName, 'i') }
         }).toArray(); // Convert cursor to array
+
+        if (products.length === 0) {
+            return res.status(404).json({ error: 'No products found.' });
+        }
+
+        return res.status(200).json(products); // Return the array of products
+    } catch (error) {
+        console.error('Error fetching products:', error);
+        return res.status(500).json({ error: 'Internal server error.' });
+    }
+});
+
+router.get('/adminTable', async (req, res) => {
+    try {
+        const db = req.app.locals.db; // Access the database from app.locals
+        const productsCollection = db.collection('Products');
+
+        // Fetch all products
+        const products = await productsCollection.find().toArray();
 
         if (products.length === 0) {
             return res.status(404).json({ error: 'No products found.' });
@@ -110,17 +128,17 @@ router.delete('/deleteProduct/:id', async (req, res) => {
         const productsCollection = db.collection('Products');
 
         // Check if the product exists using ObjectId
-        const product = await productsCollection.findOne({ 
-            _id: new ObjectId(productId) 
+        const product = await productsCollection.findOne({
+            _id: new ObjectId(productId)
         });
-        
+
         if (!product) {
             return res.status(404).json({ error: 'Produit introuvable.' });
         }
 
         // Delete the product using ObjectId
-        const result = await productsCollection.deleteOne({ 
-            _id: new ObjectId(productId) 
+        const result = await productsCollection.deleteOne({
+            _id: new ObjectId(productId)
         });
 
         if (result.deletedCount === 0) {
