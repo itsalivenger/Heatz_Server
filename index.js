@@ -28,6 +28,11 @@ const ordersRoute = require('./Routes/ordersRoute');
 const testRoute = require('./Routes/testRoute');
 
 
+app.get('/', (req, res) => {
+  console.log('hello world dedrno');
+  res.send('Hello World dedrno');
+})
+
 // Connect to the database and start the server
 (async () => {
   try {
@@ -48,11 +53,6 @@ const testRoute = require('./Routes/testRoute');
     app.use('/orders', ordersRoute);
     app.use('/test', testRoute);
 
-
-    app.get('/', (req, res) => {
-      console.log('hello world dedrno');
-      res.send('Hello World dedrno');
-    })
     // Start the server
     app.listen(port, () => {
       console.log(`Server is running on port ${port}`);
