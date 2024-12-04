@@ -33,25 +33,25 @@ const testRoute = require('./Routes/testRoute');
 // Connect to the database and start the server
 (async () => {
   try {
-    const client = await connectToDb();  // Establish connection
-    app.locals.db = client.db('Heatz');  // Store DB in app.locals for access in routes
+    // const client = await connectToDb();  // Establish connection
+    // app.locals.db = client.db('Heatz');  // Store DB in app.locals for access in routes
     app.get('/', (req, res) => {
       console.log('hello world dedrno');
       res.send('Hello World dedrno');
     })
     // Route setup (pass DB if needed)
-    app.use('/signup', signupRoute);
-    app.use('/login', loginRoute);
-    app.use('/resetPass', resetPassRoute);
-    app.use('/contact', contactRoute);
-    app.use('/newsletter', newsletterRoute);
-    app.use('/products', productsRoute);
-    app.use('/checkout', checkoutRoute);
-    app.use('/cart', cartRoute);
-    app.use('/shop', shopRoute);
-    app.use('/favorite', favoriteRoute);
-    app.use('/orders', ordersRoute);
-    app.use('/test', testRoute);
+    // app.use('/signup', signupRoute);
+    // app.use('/login', loginRoute);
+    // app.use('/resetPass', resetPassRoute);
+    // app.use('/contact', contactRoute);
+    // app.use('/newsletter', newsletterRoute);
+    // app.use('/products', productsRoute);
+    // app.use('/checkout', checkoutRoute);
+    // app.use('/cart', cartRoute);
+    // app.use('/shop', shopRoute);
+    // app.use('/favorite', favoriteRoute);
+    // app.use('/orders', ordersRoute);
+    // app.use('/test', testRoute);
 
     // Start the server
     app.listen(port, () => {
