@@ -8,7 +8,7 @@ const origins = ['http://localhost:3000', 'https://heatzheatz.vercel.app/'];
 
 
 // Middleware setup
-app.use(cors( { origin } ));
+app.use(cors( { origins } ));
 app.use(express.urlencoded({ limit: '50mb', extended: true }));
 app.use(express.json({ limit: '50mb' }));
 app.use(express.static('products'));
@@ -28,17 +28,17 @@ const ordersRoute = require('./Routes/ordersRoute');
 const testRoute = require('./Routes/testRoute');
 
 
-app.get('/', (req, res) => {
-  console.log('hello world dedrno');
-  res.send('Hello World dedrno');
-})
+
 
 // Connect to the database and start the server
 (async () => {
   try {
     const client = await connectToDb();  // Establish connection
     app.locals.db = client.db('Heatz');  // Store DB in app.locals for access in routes
-
+    app.get('/', (req, res) => {
+      console.log('hello world dedrno');
+      res.send('Hello World dedrno');
+    })
     // Route setup (pass DB if needed)
     app.use('/signup', signupRoute);
     app.use('/login', loginRoute);
