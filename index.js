@@ -49,6 +49,10 @@ const testRoute = require('./Routes/testRoute');
     app.use('/test', testRoute);
 
 
+    app.get('/', (req, res) => {
+      console.log('hello world dedrno');
+      res.send('Hello World dedrno');
+    })
     // Start the server
     app.listen(port, () => {
       console.log(`Server is running on port ${port}`);
