@@ -8,7 +8,7 @@ const origins = ['http://localhost:3000', 'https://heatzheatz.vercel.app'];
 
 
 // Middleware setup
-app.use(cors( { origins } ));
+app.use(cors( { origin: origins } ));
 app.use(express.urlencoded({ limit: '50mb', extended: true }));
 app.use(express.json({ limit: '50mb' }));
 app.use(express.static('products'));
