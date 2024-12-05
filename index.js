@@ -14,18 +14,18 @@ app.use(express.json({ limit: '50mb' }));
 app.use(express.static('products'));
 
 // Import routes
-// const signupRoute = require('./Routes/signupRoute');  
-// const loginRoute = require('./Routes/loginRoute');
-// const resetPassRoute = require('./Routes/resetPassRoute.js');
-// const contactRoute = require('./Routes/contactRoute');
-// const newsletterRoute = require('./Routes/newsletterRoute');
-// const productsRoute = require('./Routes/productsRoute.js');
-// const checkoutRoute = require('./Routes/checkoutRoute');
-// const cartRoute = require('./Routes/cartRoute');
-// const shopRoute = require('./Routes/shopRoute');
-// const favoriteRoute = require('./Routes/favoriteRoute');
-// const ordersRoute = require('./Routes/ordersRoute');
-// const testRoute = require('./Routes/testRoute');
+const signupRoute = require('./Routes/signupRoute');  
+const loginRoute = require('./Routes/loginRoute');
+const resetPassRoute = require('./Routes/resetPassRoute.js');
+const contactRoute = require('./Routes/contactRoute');
+const newsletterRoute = require('./Routes/newsletterRoute');
+const productsRoute = require('./Routes/productsRoute.js');
+const checkoutRoute = require('./Routes/checkoutRoute');
+const cartRoute = require('./Routes/cartRoute');
+const shopRoute = require('./Routes/shopRoute');
+const favoriteRoute = require('./Routes/favoriteRoute');
+const ordersRoute = require('./Routes/ordersRoute');
+const testRoute = require('./Routes/testRoute');
 
 
 
@@ -40,18 +40,18 @@ app.use(express.static('products'));
       res.send('Hello World dedrno');
     })
     // Route setup (pass DB if needed)
-    // app.use('/signup', signupRoute);
-    // app.use('/login', loginRoute);
-    // app.use('/resetPass', resetPassRoute);
-    // app.use('/contact', contactRoute);
-    // app.use('/newsletter', newsletterRoute);
-    // app.use('/products', productsRoute);
-    // app.use('/checkout', checkoutRoute);
-    // app.use('/cart', cartRoute);
-    // app.use('/shop', shopRoute);
-    // app.use('/favorite', favoriteRoute);
-    // app.use('/orders', ordersRoute);
-    // app.use('/test', testRoute);
+    app.use('/signup', signupRoute);
+    app.use('/login', loginRoute);
+    app.use('/resetPass', resetPassRoute);
+    app.use('/contact', contactRoute);
+    app.use('/newsletter', newsletterRoute);
+    app.use('/products', productsRoute);
+    app.use('/checkout', checkoutRoute);
+    app.use('/cart', cartRoute);
+    app.use('/shop', shopRoute);
+    app.use('/favorite', favoriteRoute);
+    app.use('/orders', ordersRoute);
+    app.use('/test', testRoute);
 
     // Start the server
     app.listen(port, () => {
