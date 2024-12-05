@@ -1,4 +1,5 @@
 const { MongoClient } = require('mongodb');
+require('dotenv').config();
 
 const connectToDb = async () => {
   try {
