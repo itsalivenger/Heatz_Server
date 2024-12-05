@@ -33,8 +33,8 @@ app.use(express.static('products'));
 // Connect to the database and start the server
 (async () => {
   try {
-    // const client = await connectToDb();  // Establish connection
-    // app.locals.db = client.db('Heatz');  // Store DB in app.locals for access in routes
+    const client = await connectToDb();  // Establish connection
+    app.locals.db = client.db('Heatz');  // Store DB in app.locals for access in routes
     app.get('/', (req, res) => {
       console.log('hello world dedrno');
       res.send('Hello World dedrno');
