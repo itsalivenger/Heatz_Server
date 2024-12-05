@@ -4,7 +4,7 @@ require('dotenv').config();
 const port = process.env.PORT || 5000;
 const cors = require('cors');
 const { connectToDb } = require('./modules/connection');  // Import the DB connection module
-const origins = ['http://localhost:3000', 'https://heatzheatz.vercel.app/'];
+const origins = ['http://localhost:3000', 'https://heatzheatz.vercel.app'];
 
 
 // Middleware setup
