@@ -3,7 +3,7 @@ const app = express();
 require('dotenv').config();
 const port = process.env.PORT || 5000;
 const cors = require('cors');
-const { connectToDb } = require('./modules/connection');  // Import the DB connection module
+// const { connectToDb } = require('./modules/connection');  // Import the DB connection module
 const origins = ['http://localhost:3000', 'https://heatzheatz.vercel.app/'];
 
 
@@ -14,18 +14,18 @@ app.use(express.json({ limit: '50mb' }));
 app.use(express.static('products'));
 
 // Import routes
-const signupRoute = require('./Routes/signupRoute');  
-const loginRoute = require('./Routes/loginRoute');
-const resetPassRoute = require('./Routes/resetPassRoute.js');
-const contactRoute = require('./Routes/contactRoute');
-const newsletterRoute = require('./Routes/newsletterRoute');
-const productsRoute = require('./Routes/productsRoute.js');
-const checkoutRoute = require('./Routes/checkoutRoute');
-const cartRoute = require('./Routes/cartRoute');
-const shopRoute = require('./Routes/shopRoute');
-const favoriteRoute = require('./Routes/favoriteRoute');
-const ordersRoute = require('./Routes/ordersRoute');
-const testRoute = require('./Routes/testRoute');
+// const signupRoute = require('./Routes/signupRoute');  
+// const loginRoute = require('./Routes/loginRoute');
+// const resetPassRoute = require('./Routes/resetPassRoute.js');
+// const contactRoute = require('./Routes/contactRoute');
+// const newsletterRoute = require('./Routes/newsletterRoute');
+// const productsRoute = require('./Routes/productsRoute.js');
+// const checkoutRoute = require('./Routes/checkoutRoute');
+// const cartRoute = require('./Routes/cartRoute');
+// const shopRoute = require('./Routes/shopRoute');
+// const favoriteRoute = require('./Routes/favoriteRoute');
+// const ordersRoute = require('./Routes/ordersRoute');
+// const testRoute = require('./Routes/testRoute');
 
 
 
