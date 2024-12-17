@@ -48,4 +48,62 @@ router.post('/', async (req, res) => {
     }
 });
 
+router.post('/admin', async (req, res) => {
+    const { subject, emailContent } = req.body;
+    console.log(subject, emailContent);
+
+    const db = req.app.locals.db;
+    const subscribersCollection = db.collection('Subscribers');
+
+    try {
+        // Fetch all subscribers
+        const subscribers = await subscribersCollection.find().toArray();
+
+        if (!subscribers.length) {
+            return res.status(400).json({ error: 'No subscribers found.' });
+        }
+
+        // Create a single transporter instance
+        const transporter = nodemailer.createTransport({
+            service: 'gmail',
+            auth: {
+                user: process.env.EMAIL_USER,
+                pass: process.env.EMAIL_PASS,
+            },
+        });
+
+        // Create an array of email promises
+        const emailPromises = subscribers.map((subscriber) =>
+            transporter.sendMail({
+                from: `"Newsletter" <${process.env.EMAIL_USER}>`,
+                to: subscriber.email,
+                subject: subject,
+                text: emailContent,
+            })
+        );
+
+        // Wait for all emails to be sent
+        await Promise.all(emailPromises);
+
+        return res.status(200).json({ message: 'Emails envoyés avec success!' });
+    } catch (error) {
+        console.error('Error sending emails:', error);
+        return res.status(500).json({ error: 'Internal server error.' });
+    }
+});
+
+router.get('/', async (req, res) => {
+    const db = req.app.locals.db;
+    const subscribersCollection = db.collection('Subscribers');
+
+    try {
+        // fetch 10 subscribers
+        const subscribers = await subscribersCollection.find().limit(10).toArray();
+        return res.status(200).json({ subscribers });
+    } catch (error) {
+        console.error('Error fetching subscribers:', error);
+        return res.status(500).json({ error: 'Internal server error.' });
+    }
+});
+
 module.exports = router;

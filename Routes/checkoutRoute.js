@@ -3,7 +3,7 @@ const sendEmail = require('../modules/sendEmail');
 const router = require('express').Router();
 
 router.post('/', async (req, res) => {
-    const { formData, cart } = req.body;
+    const { formData, cart, user } = req.body;
 
     try {
         // Access the database from the request object
@@ -12,7 +12,7 @@ router.post('/', async (req, res) => {
 
         // Create the order object
         const newOrder = {
-            userInfo: formData,
+            userInfo: {formData, user_id: user._id},
             cart: cart,
             createdAt: new Date(), // Set to current date and time
             status: 'pending',

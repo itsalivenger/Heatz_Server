@@ -25,6 +25,7 @@ const cartRoute = require('./Routes/cartRoute');
 const shopRoute = require('./Routes/shopRoute');
 const favoriteRoute = require('./Routes/favoriteRoute');
 const ordersRoute = require('./Routes/ordersRoute');
+const DashboardRoute = require('./Routes/adminDashboard.js');
 const testRoute = require('./Routes/testRoute');
 
 
@@ -52,6 +53,7 @@ const testRoute = require('./Routes/testRoute');
     app.use('/favorite', favoriteRoute);
     app.use('/orders', ordersRoute);
     app.use('/test', testRoute);
+    app.use('/adminDashboard', DashboardRoute);
 
     // Start the server
     app.listen(port, () => {
