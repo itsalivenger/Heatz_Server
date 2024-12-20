@@ -41,7 +41,7 @@ router.post('/', async (req, res) => {
     }
 
     // Check if the product is already in the user's cart
-    const productInCart = user.cart.some(item => item._id.equals(product._id));
+    const productInCart = user.cart.some(item => item._id === product._id);
     if (productInCart) {
       return res.status(400).json({ error: 'Le produit est déjà dans le panier.' });
     }

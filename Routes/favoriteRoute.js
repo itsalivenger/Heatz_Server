@@ -15,7 +15,7 @@ router.get('/:user_id', async (req, res) => {
 
         // Find the user by their ID
         const user = await usersCollection.findOne({ _id: new ObjectId(user_id) });
-        
+
         if (!user) {
             return res.status(404).json({ error: 'Utilisateur introuvable.' });
         }
@@ -54,9 +54,48 @@ router.put('/', async (req, res) => {
     }
 });
 
+router.post('/delete', async (req, res) => {
+    const { user_id, product_Id } = req.body;
+    console.log(user_id, product_Id);
+    try {
+        // Validate ObjectIds
+        if (!ObjectId.isValid(user_id) || !ObjectId.isValid(product_Id)) {
+            return res.status(400).json({ error: 'Vous devez vous connecter d\'abord.' });
+        }
+
+        // Access the database from the request object
+        const db = req.app.locals.db;
+        const usersCollection = db.collection('Users');
+
+        // Find the user by their ID
+        const user = await usersCollection.findOne({ _id: new ObjectId(user_id) });
+        if (!user) {
+            return res.status(404).json({ error: 'Utilisateur introuvable.' });
+        }
+
+        // Remove the product from the user's favorite list
+        user.favorite = user.favorite.filter(product => product._id.toString() !== product_Id);
+
+        // Update the user document in the database
+        const result = await usersCollection.updateOne(
+            { _id: new ObjectId(user_id) },
+            { $set: { favorite: user.favorite } }
+        );
+
+        if (result.modifiedCount === 0) {
+            return res.status(404).json({ error: 'Utilisateur introuvable.' });
+        }
+
+        return res.status(200).json({ message: 'Produit supprimé du favoris.', favorite: user.favorite });
+    } catch (error) {
+        console.error('Erreur lors de la suppression du produit du favoris:', error);
+        return res.status(500).json({ error: 'Problème lors de la suppression du produit du favoris.' });
+    }
+})
+
 router.post('/', async (req, res) => {
     const { product_Id, user_id } = req.body;
-
+    
     try {
         // Validate ObjectIds
         if (!ObjectId.isValid(product_Id) || !ObjectId.isValid(user_id)) {

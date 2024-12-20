@@ -95,6 +95,28 @@ router.get('/adminTable', async (req, res) => {
     }
 });
 
+router.get('/carouselSamples', async (req, res) => {
+    console.log('carouselSamples');
+    try {
+        const db = req.app.locals.db; // Access the database from app.locals
+        const productsCollection = db.collection('Products');
+
+        // Fetch random products
+        const products = await productsCollection.aggregate([
+            { $match: { isActive: true } },
+            { $sample: { size: 3 } },
+        ]).toArray();
+
+        if (products.length === 0) {
+            return res.status(404).json({ error: 'No products found.' });
+        }
+        return res.status(200).json({products}); // Return the array of products
+    } catch (error) {
+        console.error('Error fetching products:', error);
+        return res.status(500).json({ error: 'Internal server error.' });
+    }
+})
+
 
 router.put('/updateProduct', async (req, res) => {
     const { updatedData } = req.body;
