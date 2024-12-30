@@ -8,8 +8,9 @@ const path = require('path');
 // ajouter un produit de puis l'admin panel
 router.post('/addProduct', upload.array('productImages', 10), async (req, res) => {
     const { productName, price, category, description, SKU, features } = req.body;
-    const imageUrls = req.files ? req.files.map(file => `${req.protocol}://${req.get('host')}/${file.filename}`) : [];
+    const imageUrls = req.files ? req.files.map(file => `${req.protocol}://${req.get('host')}/uploads/${file.filename}`) : [];
 
+    
     try {
         const db = req.app.locals.db;
         const productsCollection = db.collection('Products');
@@ -200,6 +201,7 @@ router.put('/toggleProductActiveState/:id', async (req, res) => {
         return res.status(500).json({ error: 'Problème lors de la modification de l\'etat du produit.' });
     }
 });
+
 
 router.delete('/deleteProduct/:id', async (req, res) => {
     const productId = req.params.id;

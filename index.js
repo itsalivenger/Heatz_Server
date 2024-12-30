@@ -5,13 +5,14 @@ const port = process.env.PORT || 5000;
 const cors = require('cors');
 const { connectToDb } = require('./modules/connection');  // Import the DB connection module
 const origins = ['http://localhost:3000', 'https://heatzheatz.vercel.app'];
+const path = require('path');
 
 
 // Middleware setup
 app.use(cors( { origin: origins } ));
 app.use(express.urlencoded({ limit: '50mb', extended: true }));
 app.use(express.json({ limit: '50mb' }));
-app.use(express.static('products'));
+app.use('/uploads', express.static(path.join(__dirname, 'products')));
 
 // Import routes
 const signupRoute = require('./Routes/signupRoute');  
