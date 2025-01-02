@@ -4,7 +4,7 @@ require('dotenv').config();
 const port = process.env.PORT || 5000;
 const cors = require('cors');
 const { connectToDb } = require('./modules/connection');  // Import the DB connection module
-const origins = ['http://localhost:3000', 'https://heatzheatz.vercel.app'];
+const origins = ['http://localhost:3000', 'https://heatzheatz.vercel.app', 'https://www.heatz.ma'];
 const path = require('path');
 
 
@@ -41,6 +41,7 @@ const testRoute = require('./Routes/testRoute');
       console.log('hello world dedrno');
       res.send('Hello World dedrno');
     })
+
     // Route setup (pass DB if needed)
     app.use('/signup', signupRoute);
     app.use('/login', loginRoute);
@@ -53,8 +54,8 @@ const testRoute = require('./Routes/testRoute');
     app.use('/shop', shopRoute);
     app.use('/favorite', favoriteRoute);
     app.use('/orders', ordersRoute);
-    app.use('/test', testRoute);
     app.use('/adminDashboard', DashboardRoute);
+    app.use('/test', testRoute);
 
     // Start the server
     app.listen(port, () => {
