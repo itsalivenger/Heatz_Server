@@ -24,7 +24,8 @@ const uploadToCloudinary = (fileBuffer, folder = 'products') => {
 
 async function deleteFromCloudinary(imageUrl) {
     try {
-        const publicId = imageUrl.split('/').pop().split('.')[0]; // Extract public ID
+        // More robust way to extract public ID (handles potential nested paths)
+        const publicId = imageUrl.split('/').slice(-1)[0].split('.')[0];
         const result = await cloudinary.uploader.destroy(publicId);
         console.log(`Deleted from Cloudinary: ${imageUrl}`);
         return result;
@@ -33,5 +34,6 @@ async function deleteFromCloudinary(imageUrl) {
         throw error; // Re-throw to handle in the calling code
     }
 }
+
 
 module.exports = {uploadToCloudinary, deleteFromCloudinary};

@@ -232,20 +232,21 @@ router.delete('/deleteProduct/:id', async (req, res) => {
             return res.status(404).json({ error: 'Produit introuvable.' });
         }
 
-        // Extract image public IDs from Cloudinary URLs and delete images
-        if (product.imageUrls && product.imageUrls.length > 0) {
-            for (const imageUrl of product.imageUrls) {
-                try {
-                    await deleteFromCloudinary(imageUrl)
-                } catch (cloudinaryError) {
-                    console.error('Erreur lors de la suppression de l\'image de Cloudinary:', cloudinaryError);
-                }
-            }
+        // Delete images from Cloudinary
+        if (product.imageUrls?.length > 0) {
+            await Promise.all(
+                product.imageUrls.map(async (imageUrl) => {
+                    try {
+                        await deleteFromCloudinary(imageUrl);
+                    } catch (cloudinaryError) {
+                        console.error(`Erreur lors de la suppression de l'image de Cloudinary (${imageUrl}):`, cloudinaryError);
+                    }
+                })
+            );
         }
 
         // Delete the product from the database
         const result = await productsCollection.deleteOne({ _id: new ObjectId(productId) });
-
         if (result.deletedCount === 0) {
             return res.status(404).json({ error: 'Échec de la suppression du produit.' });
         }
@@ -256,6 +257,7 @@ router.delete('/deleteProduct/:id', async (req, res) => {
         return res.status(500).json({ error: 'Erreur interne du serveur.' });
     }
 });
+
 
 
 
