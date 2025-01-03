@@ -22,10 +22,10 @@ const uploadToCloudinary = (fileBuffer, folder = 'products') => {
     });
 };
 
-async function deleteFromCloudinary(imageUrl) {
+async function deleteFromCloudinary(imageUrl, folder = 'products') {
     try {
-        // More robust way to extract public ID (handles potential nested paths)
-        const publicId = imageUrl.split('/').slice(-1)[0].split('.')[0];
+        // Extract the public ID (folder and filename without extension)
+        const publicId = folder + '/' + imageUrl.split('/').pop().split('.')[0];
         const result = await cloudinary.uploader.destroy(publicId);
         console.log(`Deleted from Cloudinary: ${imageUrl}`);
         return result;

@@ -218,7 +218,7 @@ router.delete('/deleteProduct/:id', async (req, res) => {
 
     // Validate MongoDB ObjectId
     if (!ObjectId.isValid(productId)) {
-        return res.status(400).json({ error: 'ID du produit invalide.' });
+        return res.status(400).json({ error: 'Invalid product ID.' });
     }
 
     try {
@@ -229,7 +229,7 @@ router.delete('/deleteProduct/:id', async (req, res) => {
         const product = await productsCollection.findOne({ _id: new ObjectId(productId) });
 
         if (!product) {
-            return res.status(404).json({ error: 'Produit introuvable.' });
+            return res.status(404).json({ error: 'Product not found.' });
         }
 
         // Delete images from Cloudinary
@@ -237,9 +237,9 @@ router.delete('/deleteProduct/:id', async (req, res) => {
             await Promise.all(
                 product.imageUrls.map(async (imageUrl) => {
                     try {
-                        await deleteFromCloudinary(imageUrl);
+                        await deleteFromCloudinary(imageUrl, 'products');
                     } catch (cloudinaryError) {
-                        console.error(`Erreur lors de la suppression de l'image de Cloudinary (${imageUrl}):`, cloudinaryError);
+                        console.error(`Error deleting image from Cloudinary (${imageUrl}):`, cloudinaryError);
                     }
                 })
             );
@@ -248,16 +248,15 @@ router.delete('/deleteProduct/:id', async (req, res) => {
         // Delete the product from the database
         const result = await productsCollection.deleteOne({ _id: new ObjectId(productId) });
         if (result.deletedCount === 0) {
-            return res.status(404).json({ error: 'Échec de la suppression du produit.' });
+            return res.status(404).json({ error: 'Failed to delete product.' });
         }
 
-        return res.status(200).json({ message: 'Produit et images associés supprimés avec succès!' });
+        return res.status(200).json({ message: 'Product and associated images deleted successfully!' });
     } catch (error) {
         console.error('Error deleting product:', error);
-        return res.status(500).json({ error: 'Erreur interne du serveur.' });
+        return res.status(500).json({ error: 'Internal server error.' });
     }
 });
-
 
 
 
