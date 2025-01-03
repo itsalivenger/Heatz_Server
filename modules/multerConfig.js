@@ -1,21 +1,8 @@
-const storage = multer.diskStorage({
-    destination: function (req, file, cb) {
-        const uploadPath = path.join(__dirname, 'products');
+const multer = require('multer');
+const path = require('path')
 
-        // Check if the folder exists; if not, create it
-        if (!fs.existsSync(uploadPath)) {
-            console.log(`Creating directory: ${uploadPath}`);
-            fs.mkdirSync(uploadPath, { recursive: true }); // Ensures that nested folders are created if needed
-        }
-
-        cb(null, uploadPath); // Save files to 'products' folder
-    },
-    filename: function (req, file, cb) {
-        const uniqueName = Date.now() + path.extname(file.originalname);
-        console.log(`Saving file to: ${path.join('products', uniqueName)}`);
-        cb(null, uniqueName); // Save the file with the unique name
-    }
-});
+// Use memory storage instead of disk storage
+const storage = multer.memoryStorage();
 
 const upload = multer({
     storage,

@@ -4,14 +4,24 @@ const upload = require('../modules/multerConfig');
 const { ObjectId } = require('mongodb');
 const fs = require('fs');
 const path = require('path');
+const uploadToCloudinary = require('../modules/cloudinaryHelper');
 
 // ajouter un produit de puis l'admin panel
+
 router.post('/addProduct', upload.array('productImages', 10), async (req, res) => {
     const { productName, price, category, description, SKU, features } = req.body;
-    const imageUrls = req.files ? req.files.map(file => `${req.protocol}://${req.get('host')}/uploads/${file.filename}`) : [];
 
-    
     try {
+        const imageUrls = [];
+
+        // Upload images to Cloudinary
+        if (req.files && req.files.length > 0) {
+            for (const file of req.files) {
+                const url = await uploadToCloudinary(file.buffer); // Upload each file using the helper function
+                imageUrls.push(url);
+            }
+        }
+
         const db = req.app.locals.db;
         const productsCollection = db.collection('Products');
 
