@@ -4,7 +4,7 @@ const upload = require('../modules/multerConfig');
 const { ObjectId } = require('mongodb');
 const fs = require('fs');
 const path = require('path');
-const uploadToCloudinary = require('../modules/cloudinaryHelper');
+const { uploadToCloudinary, deleteFromCloudinary } = require('../modules/cloudinaryHelper');
 
 // ajouter un produit de puis l'admin panel
 
@@ -121,7 +121,7 @@ router.get('/carouselSamples', async (req, res) => {
         if (products.length === 0) {
             return res.status(404).json({ error: 'No products found.' });
         }
-        return res.status(200).json({products}); // Return the array of products
+        return res.status(200).json({ products }); // Return the array of products
     } catch (error) {
         console.error('Error fetching products:', error);
         return res.status(500).json({ error: 'Internal server error.' });
@@ -232,16 +232,13 @@ router.delete('/deleteProduct/:id', async (req, res) => {
             return res.status(404).json({ error: 'Produit introuvable.' });
         }
 
-        // Extract image URLs from the product and delete them from the file system
+        // Extract image public IDs from Cloudinary URLs and delete images
         if (product.imageUrls && product.imageUrls.length > 0) {
             for (const imageUrl of product.imageUrls) {
-                const imagePath = path.join(__dirname, '../uploads', path.basename(imageUrl));
                 try {
-                    if (fs.existsSync(imagePath)) {
-                        fs.unlinkSync(imagePath); // Delete the file
-                    }
-                } catch (fsError) {
-                    console.error('Erreur lors de la suppression de l\'image:', fsError);
+                    await deleteFromCloudinary(imageUrl)
+                } catch (cloudinaryError) {
+                    console.error('Erreur lors de la suppression de l\'image de Cloudinary:', cloudinaryError);
                 }
             }
         }
