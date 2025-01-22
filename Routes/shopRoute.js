@@ -1,7 +1,7 @@
 const router = require('express').Router();
 
 // Define the number of products to load per request (e.g., 10 products per load)
-const loadLimit = 5;
+const loadLimit = 20;
 
 router.get('/', async (req, res) => {
     const db = req.app.locals.db;
