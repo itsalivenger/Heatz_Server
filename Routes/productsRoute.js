@@ -9,8 +9,8 @@ const { uploadToCloudinary, deleteFromCloudinary } = require('../modules/cloudin
 // ajouter un produit de puis l'admin panel
 
 router.post('/addProduct', upload.array('productImages', 10), async (req, res) => {
-    const { productName, price, category, description, SKU, features } = req.body;
-
+    const { productName, price, category, description, SKU, featuresStr } = req.body;
+    const features = featuresStr.split('$dedrno');
     try {
         const imageUrls = [];
 
@@ -28,9 +28,9 @@ router.post('/addProduct', upload.array('productImages', 10), async (req, res) =
         // Optional: Check if a product with the same productName already exists
         const existingProduct = await productsCollection.findOne({ productName });
         if (existingProduct) {
-            return res.status(400).json({ error: 'Product with this name already exists.' });
+            return res.status(400).json({ error: 'Produit avec ce nom deja existe.' });
         }
-
+        console.log(typeof features);
         // Create the new product object
         const newProduct = {
             productName,
