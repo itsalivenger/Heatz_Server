@@ -106,8 +106,34 @@ router.get('/adminTable', async (req, res) => {
     }
 });
 
+router.get('/getProduct/:id', async (req, res) => {
+    const productId = req.params.id;
+
+    // Validate MongoDB ObjectId
+    if (!ObjectId.isValid(productId)) {
+        return res.status(400).json({ error: 'Invalid product ID.' });
+    }
+
+    try {
+        const db = req.app.locals.db;
+        const productsCollection = db.collection('Products');
+
+        // Find the product using ObjectId
+        const product = await productsCollection.findOne({ _id: new ObjectId(productId) });
+
+        if (!product) {
+            return res.status(404).json({ error: 'Product not found.' });
+        }
+
+        return res.status(200).json(product);
+    } catch (error) {
+        console.error('Error fetching product:', error);
+        return res.status(500).json({ error: 'Internal server error.' });
+    }
+});
+
+
 router.get('/carouselSamples', async (req, res) => {
-    console.log('carouselSamples');
     try {
         const db = req.app.locals.db; // Access the database from app.locals
         const productsCollection = db.collection('Products');

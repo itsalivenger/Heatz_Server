@@ -95,7 +95,7 @@ router.post('/delete', async (req, res) => {
 
 router.post('/', async (req, res) => {
     const { product_Id, user_id } = req.body;
-    
+
     try {
         // Validate ObjectIds
         if (!ObjectId.isValid(product_Id) || !ObjectId.isValid(user_id)) {
@@ -118,6 +118,12 @@ router.post('/', async (req, res) => {
             return res.status(404).json({ error: 'Utilisateur introuvable.' });
         }
 
+        // Check if the product is already in the user's favorite list
+        const isFavorite = user.favorite.some(fav => fav._id.toString() === product_Id);
+        if (isFavorite) {
+            return res.status(400).json({ error: 'Le produit est déjà dans les favoris.' });
+        }
+
         // Add the product to the user's favorite list
         user.favorite.push(product);
 
@@ -131,11 +137,12 @@ router.post('/', async (req, res) => {
             return res.status(404).json({ error: 'Utilisateur introuvable.' });
         }
 
-        return res.status(200).json({ message: 'Produit mis à jour dans les favoris.', favorite: user.favorite });
+        return res.status(200).json({ message: 'Produit ajouté aux favoris.', favorite: user.favorite });
     } catch (error) {
         console.error('Erreur lors de la mise à jour des favoris:', error);
         return res.status(500).json({ error: 'Problème lors de la mise à jour des favoris.' });
     }
 });
+
 
 module.exports = router;
