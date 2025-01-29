@@ -86,6 +86,33 @@ router.post('/getProducts/:name', async (req, res) => {
 });
 
 
+router.post('/searchItem', async (req, res) => {
+    const searchVal = req.body.searchVal.trim(); // Trim any extra spaces
+    try {
+        const db = req.app.locals.db; // Access the database from app.locals
+        const productsCollection = db.collection('Products');
+
+        // Perform regex-based partial match for productName, SKU, and category
+        const products = await productsCollection.find({
+            $or: [
+                { productName: { $regex: searchVal, $options: "i" } }, // Case-insensitive regex
+                { SKU: { $regex: searchVal, $options: "i" } },
+                { category: { $regex: searchVal, $options: "i" } }
+            ]
+        }).toArray();
+
+        if (products.length === 0) {
+            return res.status(403).json({ error: 'No products found.' });
+        }
+
+        return res.status(200).json(products); // Return the array of products
+    } catch (error) {
+        console.error('Error fetching products:', error);
+        return res.status(500).json({ error: 'Internal server error.' });
+    }
+});
+
+
 // chercher des produits pour le tableau avec get
 router.get('/adminTable', async (req, res) => {
     try {
