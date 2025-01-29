@@ -168,7 +168,7 @@ router.get('/carouselSamples', async (req, res) => {
         // Fetch random products
         const products = await productsCollection.aggregate([
             { $match: { isActive: true } },
-            { $sample: { size: 3 } },
+            { $sample: { size: 10 } },
         ]).toArray();
 
         if (products.length === 0) {
