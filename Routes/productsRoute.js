@@ -112,7 +112,6 @@ router.post('/searchItem', async (req, res) => {
     }
 });
 
-
 // chercher des produits pour le tableau avec get
 router.get('/adminTable', async (req, res) => {
     try {

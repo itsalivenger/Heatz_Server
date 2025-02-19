@@ -19,7 +19,7 @@ router.post('/', async (req, res) => {
   try {
     // Validate ObjectIds
     if (!ObjectId.isValid(product_Id) || !ObjectId.isValid(user_id)) {
-      return res.status(400).json({ error: 'Vous devez vous connecter d\'abord.' });
+      return res.status(400).json({ error: 'Vous devez vous connecter d\'abord.', msg: 'noUser'});
     }
 
     // Access the database from the request object
