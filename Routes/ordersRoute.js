@@ -7,7 +7,7 @@ router.get('/', async (req, res) => {
 
     try {
         // Extract query parameters
-        const { lastOrderId, limit = 10, sortBy, sortOrder = 'asc' } = req.query;
+        const { lastOrderId, limit = 10, sortBy, sortOrder = 'des' } = req.query;
 
         // Build the query object for pagination
         const query = {};
@@ -48,36 +48,55 @@ router.get('/', async (req, res) => {
 router.post('/search', async (req, res) => {
     const { searchTerm, searchBy } = req.body;
     console.log('Search Term:', searchTerm, 'Search By:', searchBy); // Debugging log
+
     const db = req.app.locals.db;
     const ordersCollection = db.collection('Orders');
 
-    // Define allowed fields for searching
-    const allowedFields = ['_id', 'email'];
-    if (!allowedFields.includes(searchBy)) {
-        return res.status(400).json({ error: 'Invalid search field.' });
-    }
-
     try {
-        let query;
+        const limit = 10; // Number of orders to return
 
-        // Build query based on searchBy
-        if (searchBy === '_id') {
-            if (typeof searchTerm !== 'string') {
-                return res.status(400).json({ error: 'Invalid search term for ID.' });
-            }
-            query = { _id: { $regex: new RegExp(searchTerm, 'i') } }; // Case-insensitive partial match
-        } else if (searchBy === 'email') {
-            if (typeof searchTerm !== 'string') {
-                return res.status(400).json({ error: 'Invalid search term for email.' });
-            }
-            query = { 'userInfo.email': { $regex: new RegExp(searchTerm, 'i') } }; // Case-insensitive email search
+        // If searchTerm is an empty string, return all orders (with limit)
+        if (searchTerm === '') {
+            const orders = await ordersCollection.find().limit(limit).toArray();
+            return res.status(200).json({ orders });
         }
 
-        // Execute the query
-        const orders = await ordersCollection.find(query).toArray();
+        // Validate searchBy
+        if (!searchBy) {
+            return res.status(400).json({ error: 'Missing searchBy in request body.' });
+        }
 
-        // Handle empty results
-        return res.status(200).json({ orders }); // Returns empty array if no matches
+        let query = {};
+
+        
+        // Build the query based on searchBy
+        if (searchBy === '_id') {
+            // Use aggregation to convert _id to string and perform regex search
+            const orders = await ordersCollection.aggregate([
+                {
+                    $addFields: {
+                        idString: { $toString: "$_id" } // Convert _id to string
+                    }
+                },
+                {
+                    $match: {
+                        idString: { $regex: new RegExp(searchTerm, 'i') } // Search by idString
+                    }
+                },
+                {
+                    $limit: limit // Limit the number of results
+                }
+            ]).toArray();
+
+            return res.status(200).json({ orders });
+        } else if (searchBy === 'email') {
+            query = { 'userInfo.formData.email': { $regex: new RegExp(searchTerm, 'i') } };
+            const orders = await ordersCollection.find(query).limit(limit).toArray();
+            return res.status(200).json({ orders });
+        } else {
+            return res.status(400).json({ error: 'Invalid search field.' });
+        }
+
     } catch (error) {
         console.error('Error searching orders:', error);
         return res.status(500).json({ error: 'Internal Server Error' });

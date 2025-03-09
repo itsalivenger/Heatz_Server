@@ -3,7 +3,6 @@ const router = express.Router();
 const bcrypt = require('bcrypt');
 const crypto = require('crypto');
 const nodemailer = require('nodemailer');
-const { MongoClient } = require('mongodb');
 
 router.post('/', async (req, res) => {
     const { email, domain } = req.body;
